@@ -18,7 +18,7 @@ export const saveCuisine = createAsyncThunk(
       formData.append('file', cuisineData.file);
   
       const response = await axios.post(
-        'http://localhost:3100/Cuisine/saveCuisine',
+        'http://localhost:3200/Cuisine/saveCuisine',
         formData,
         {
           headers: {
@@ -33,7 +33,7 @@ export const saveCuisine = createAsyncThunk(
 //2. to fetch all cuisines
 export const getAllCuisines = createAsyncThunk('cuisine/getAllCuisines', async () => {
   try {
-    const response = await axios.get('http://localhost:3100/Cuisine/getAll');
+    const response = await axios.get('http://localhost:3200/Cuisine/getAll');
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -42,7 +42,7 @@ export const getAllCuisines = createAsyncThunk('cuisine/getAllCuisines', async (
 //3. to get a specific cuisine
 export const getCuisineById = createAsyncThunk('cuisine/getCuisineById', async (id) => {
     try {
-      const response = await axios.get(`http://localhost:3100/Cuisine/getById?id=${id}`);
+      const response = await axios.get(`http://localhost:3200/Cuisine/getById?id=${id}`);
       return response.data;
     } catch (error) {
       throw error.response.data;

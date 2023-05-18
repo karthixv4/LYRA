@@ -14,7 +14,6 @@ import {
 import { useUserAuth } from '../auth/UserAuthContext';
 const Home = () => {
   const {user,logout} = useUserAuth();
-  console.log("USER",user)
     const dispatch = useDispatch();
     var recipes = useSelector((state) => state.recipes.recipes)
     useEffect(() => {
@@ -37,7 +36,6 @@ const Home = () => {
             <a href="#" className="-m-1.5 p-1.5">
               <span className="flex items-center space-x-2.5 font-bold text-slate-800 no-underline dark:text-white">
                 <span className="-mt-0.5">Lyra</span>
-                <a onClick={doLogout}>Logout</a>
               </span>
             </a>
           </div>
@@ -51,21 +49,32 @@ const Home = () => {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
+           <div className="hidden lg:flex lg:gap-x-12">
+            <Link to="/Categories"
                 className="text-sm font-semibold leading-6 text-gray-900"
               >
-                {item.name}
-              </a>
-            ))}
-          </div>
+                Categories
+              </Link>
+              <Link to="/home"
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                All Blogs
+              </Link>
+              <Link to="/addRecipe"
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                Write one!
+              </Link>
+            </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a href="/Signin" className="text-sm font-semibold leading-6 text-gray-900">
+            {user && <Link onClick={doLogout} className="text-sm font-semibold leading-6 text-gray-900">
+            Log out <span aria-hidden="true">&rarr;</span>
+              </Link>}
+            { !user && 
+            <Link to="/Signin" className="text-sm font-semibold leading-6 text-gray-900">
               Log in <span aria-hidden="true">&rarr;</span>
-            </a>
+            </Link>
+            }
           </div>
         </nav>
         <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -92,23 +101,19 @@ const Home = () => {
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-gray-500/10">
                 <div className="space-y-2 py-6">
-                  {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >
-                      {item.name}
-                    </a>
-                  ))}
+                  <Link className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  to="/Categories">Categories</Link>
+                  <Link className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  to="/home"> All Blogs</Link>
+                  <Link className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  to="/addRecipe">Write one!</Link>
                 </div>
                 <div className="py-6">
-                  <a
-                    href="#"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  >
-                    Log in
-                  </a>
+                  {user && <Link className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                 onClick={doLogout}>Log out</Link>}
+                  {!user && <Link className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                 to="/signin">Log In</Link>}
+                  
                 </div>
               </div>
             </div>
@@ -153,6 +158,7 @@ const Home = () => {
                   <p className="flex-1 text-2xl font-semibold text-gray-900">{recipe.name}</p>
                 </div>
                 <p className="w-full text-base leading-normal text-gray-600">{recipe.description}</p>
+                <p className="w-full text-base leading-normal text-gray-600">By: {recipe?.userDetails?.name}</p>
               </div>
               {/* <div className="flex  space-x-3 ">
                 <img className="h-full w-10 rounded-lg" src={post.avatar} alt={post.author} />
@@ -275,14 +281,6 @@ const Home = () => {
     </div>
   )
 }
-
-
-const navigation = [
-  { name: 'Categories', href: '/categories' },
-  { name: 'All Blogs', href: '/home' },
-  { name: 'Write one!', href: '/addRecipe' },
-
-]
 
 
 export default Home

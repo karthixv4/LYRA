@@ -12,12 +12,12 @@ function App() {
   return (
     <UserContextProvider>
     <Routes>
-    <Route path="/categories" element={<Categories></Categories>}></Route>
-    <Route path="/addRecipe" element={<AddRecipe></AddRecipe>}/>
-    <Route path="/home" element={<SecureRoute><Home/></SecureRoute>}/>
-    <Route path="/signin" element={<SignIn></SignIn>}></Route>
-    <Route path="/signup" element={<Signup></Signup>}></Route>
-    <Route path="/recipe/:id" element={<Recipe></Recipe>}></Route>
+    <Route path="/categories" element={<SecureRoute><Categories/></SecureRoute>}></Route>
+    <Route path="/addRecipe" element={<SecureRoute><AddRecipe/></SecureRoute>}/>
+    <Route path="/home" element={<Home/>}></Route>
+    <Route path="/signin" element={<SignIn/>}></Route>
+    <Route path="/signup" element={<Signup/>}></Route>
+    <Route path="/recipe/:id" element={<SecureRoute><Recipe/></SecureRoute>}></Route>
     </Routes>
     </UserContextProvider>
   );

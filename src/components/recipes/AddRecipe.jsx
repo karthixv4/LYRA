@@ -4,13 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllRecipes } from '../../slices/RecipeSlice';
 import { getAllCuisines } from '../../slices/CuisineSlice';
 import { updateName,updateIngredient,updateDescription,saveRecipe,updateFile,updateCookingSteps,updateDietRestriction } from '../../slices/RecipeSlice';
+import { useUserAuth } from '../auth/UserAuthContext';
 const AddRecipe = () => {
 
     const dispatch = useDispatch();
     var recipe = useSelector((state) => state.recipes.recipe);
     var cuisines = useSelector((state) => state.cuisines.cuisines);
     var file = useSelector((state) => state.recipes.recipe);
-
+    const {user} = useUserAuth();
     const [selectedFile, setSelectedFile] = useState(null);
     useEffect(() => {
         dispatch(getAllRecipes())
@@ -24,7 +25,12 @@ const AddRecipe = () => {
         event.preventDefault();
         recipe = { ...recipe,
                 ingredient: ingredients,
+                userDetails: {
+                  name: user.displayName,
+                  email: user.email
+                }
           }
+        console.log("Recipe Details: ",recipe)
           const newRecipe={
             recipe:recipe,
             file:selectedFile

@@ -2,12 +2,16 @@ import React,{useState} from 'react'
 import { useUserAuth } from './auth/UserAuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import GoogleButton from 'react-google-button';
+import { createUser } from '../slices/UserSlice';
+import { useDispatch, useSelector } from 'react-redux';
 const Signup = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const [error,setError] = useState('');
-    const { signUp } = useUserAuth();
+    const { signUp,user,googleSignIn } = useUserAuth();
     const TrySignup= async(e)=>{
         e.preventDefault();
         setError("")
@@ -19,6 +23,26 @@ const Signup = () => {
           navigate("/signin")
         }
     }
+    const saveUsertoDB =(name,email)=>{
+        const userDetails = {
+          name: name,
+          email:email
+        }
+        dispatch(createUser(userDetails));
+    }
+    const handleGoogleSignIn = async (event) =>{
+      event.preventDefault();
+      setError("")
+      try{
+        await googleSignIn().then((result)=>saveUsertoDB(result?.user?.displayName,result?.user?.email))
+        navigate("/home")
+      }catch(error){
+        console.log(error.message)
+        setError(error.message)
+        navigate("/signup")
+      }
+     
+  }
 
   return (
     <div>
@@ -177,6 +201,7 @@ const Signup = () => {
                         id="password" />
                     </div>
                   </div>
+                  <GoogleButton onClick={handleGoogleSignIn}/>    
                   <div>
                     <button
                       type="submit"

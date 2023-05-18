@@ -25,7 +25,7 @@ const SignIn = () => {
       event.preventDefault();
       setError("")
       try{
-        console.log("HEREE")
+    
         await googleSignIn()
         navigate("/home")
       }catch(error){

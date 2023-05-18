@@ -16,7 +16,6 @@ const [user,setUser] = useState("");
     }
     function googleSignIn(){
         const googleAuthProvider = new GoogleAuthProvider();
-        console.log("here too")
         return signInWithPopup(auth,googleAuthProvider)
     }
     useEffect(()=>{

@@ -18,7 +18,6 @@ const Categories = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const dispatch = useDispatch();
     var cuisines = useSelector((state) => state.cuisines.cuisines)
-    console.log("Hii.",cuisines)
     useEffect(() => {
         dispatch(getAllCuisines())
       }, []);
