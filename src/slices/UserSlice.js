@@ -5,7 +5,10 @@ const initialState = {
   name: '',
   email: '',
   loading: false,
-  selectedUser: [],
+  selectedUser: {
+    name: '',
+    email:''
+},
   error: ''
 };
 

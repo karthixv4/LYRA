@@ -8,6 +8,7 @@ import Signup from "./components/Signup";
 import Recipe from "./components/recipes/Recipe";
 import { UserContextProvider } from "./components/auth/UserAuthContext";
 import SecureRoute from "./components/auth/SecureRoute";
+import Header from "./components/header/Header";
 function App() {
   return (
     <UserContextProvider>
@@ -18,6 +19,7 @@ function App() {
     <Route path="/signin" element={<SignIn/>}></Route>
     <Route path="/signup" element={<Signup/>}></Route>
     <Route path="/recipe/:id" element={<SecureRoute><Recipe/></SecureRoute>}></Route>
+    <Route path='/header' element={<Header/>}></Route>
     </Routes>
     </UserContextProvider>
   );

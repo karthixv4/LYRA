@@ -37,8 +37,6 @@ const AddRecipe = () => {
           }
         dispatch(saveRecipe(newRecipe))
       };
-
-   
     
       const [ingredients, setIngredients] = useState([{ name: '', quantity: '' }]);
     
