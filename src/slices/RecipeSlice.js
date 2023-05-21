@@ -6,7 +6,7 @@ recipe:{
   name:'',
   description:'',
   cookingSteps:'',
-  cuisine:{"id":"644d9cfc0f2a3b3e7a8420e2"},
+  cuisine:{},
   ingredient:[{ name: '', quantity: '' }],
   mealType:'',
   dietRestriction:'',
@@ -20,7 +20,8 @@ file:null,
 liked:false,
 likeCount:0,
 userName:'',
-comment:''
+comment:'',
+selectedCuisine:'CHOOSE ME'
 }
 //Service Calls will be made here
 //1. To save the Recipe
@@ -98,13 +99,21 @@ export const saveRecipe = createAsyncThunk(
    export const addCommentToTheRecipe = createAsyncThunk('recipe/addComment', async (details) => {
     try {
       const response = await axios.post(`http://localhost:3200/Comments/addComment`,details);
-      console.log("response coment: ",response.data)
       return response.data;
     } catch (error) {
       throw error.response.data;
     }
   });
 
+  //7. Get Recipes by Cuisine Type
+  export const getRecipesByCuisine = createAsyncThunk('recipe/getByCuisine', async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:3200/Recipe/getByCuisine?id=${id}`,);
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  });
 
 const recipeSlice = createSlice({
     name:'category Slice',
@@ -134,6 +143,14 @@ const recipeSlice = createSlice({
       },
       setComment(state,action){
         state.comment = action.payload
+      },
+      setCuisine(state,action){
+        function findCuisine(name, array) {
+          const foundObject = array.find((obj) => obj.name === name);
+          return foundObject || null;
+        }
+        const {id,cuisines} = action.payload;
+        state.recipe.cuisine = findCuisine(id,cuisines)
       }
       
     },
@@ -234,10 +251,22 @@ const recipeSlice = createSlice({
           .addCase(addCommentToTheRecipe.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
+          })
+          .addCase(getRecipesByCuisine.pending, (state) => {
+            state.status = 'loading';
+            state.error = null;
+          })
+          .addCase(getRecipesByCuisine.fulfilled, (state, action) => {
+            state.recipes = action.payload
+            state.error = null;
+          })
+          .addCase(getRecipesByCuisine.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
           });
 
       },
 })
 
-export const {updateName,updateDescription,updateIngredient,updateFile,updateCookingSteps,updateDietRestriction,setUserName,setComment} = recipeSlice.actions
+export const {updateName,setCuisine,updateDescription,updateIngredient,updateFile,updateCookingSteps,updateDietRestriction,setUserName,setComment} = recipeSlice.actions
 export default recipeSlice.reducer;

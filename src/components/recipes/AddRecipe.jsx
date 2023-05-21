@@ -1,16 +1,24 @@
 import React from 'react'
-import { useEffect,useState } from 'react';
+import { Listbox, Transition } from '@headlessui/react'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { useEffect,useState,Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllRecipes } from '../../slices/RecipeSlice';
 import { getAllCuisines } from '../../slices/CuisineSlice';
-import { updateName,updateIngredient,updateDescription,saveRecipe,updateFile,updateCookingSteps,updateDietRestriction } from '../../slices/RecipeSlice';
+import { updateName,updateIngredient,setCuisine,updateDescription,saveRecipe,updateFile,updateCookingSteps,updateDietRestriction } from '../../slices/RecipeSlice';
 import { useUserAuth } from '../auth/UserAuthContext';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 const AddRecipe = () => {
 
     const dispatch = useDispatch();
     var recipe = useSelector((state) => state.recipes.recipe);
     var cuisines = useSelector((state) => state.cuisines.cuisines);
     var file = useSelector((state) => state.recipes.recipe);
+    var selectedCuisine = useSelector((state) => state.recipes.selectedCuisine);
     const {user} = useUserAuth();
     const [selectedFile, setSelectedFile] = useState(null);
     useEffect(() => {
@@ -57,6 +65,14 @@ const AddRecipe = () => {
         values.splice(index, 1);
         setIngredients(values);
       }
+
+      const handleCuisineChange =(id)=>{
+        const cuisine = {
+          id: id,
+          cuisines: cuisines
+        }
+       dispatch(setCuisine(cuisine))
+      }
   return (
     <>
     <form onSubmit={handleSubmit}>
@@ -74,16 +90,22 @@ const AddRecipe = () => {
                           onChange={(e=>dispatch(updateName(e.target.value)))}  class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
                 </div>
               </div>
-              <div class="p-2 w-1/2">
-                <div class="relative">
-                  <label for="category" class="leading-7 text-sm text-grey-600">Cuisine</label>
-                  <select id="category" name="category" placeholder="Name your recipe..." class="h-10 w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"><option value="NA">--select category--</option>
-                  {cuisines.map((cuisine,index)=>(
-                    <option value={cuisine.id} key={index}>{cuisine.name}</option>
-                  ))}
-                  </select>
-                </div>
-              </div>
+              <FormControl sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          label="Age"
+          value={recipe.cuisine.name || ''}
+          onChange={(e)=>handleCuisineChange(e.target.value)}
+        >
+           {cuisines.map((cuisine,index)=>(
+          <MenuItem key={index} value={cuisine.name}>{cuisine.name}</MenuItem>
+         
+          ))}
+        </Select>
+      </FormControl>
+ 
               <div class="p-2 w-1/2">
                 <div class="relative">
                   <label for="image" class="leading-7 text-sm text-gray-600">Image</label>

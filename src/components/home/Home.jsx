@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllRecipes } from '../../slices/RecipeSlice';
 import { Link } from 'react-router-dom';
 import Header from '../header/Header';
+import Footer from '../header/Footer';
+import Statistics from '../header/Statistics';
+import TopRecipe from '../header/TopRecipe';
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
@@ -28,168 +31,86 @@ const Home = () => {
         console.log(e.message)
       }
     }
+    function truncateText(text, limit) {
+      if (!text || !limit) return '';
+      if (text.length <= limit) return text;
+    
+      const truncatedText = text.split(' ').slice(0, limit).join(' ');
+      return truncatedText + '...';
+    }
   return (
+    <>
     <div>
       <Header />
       <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Head */}
-        <div className="flex flex-col items-center justify-center space-y-8 py-20">
-          <p className="text-center text-base font-semibold leading-normal text-purple-700">
-            Lyra
+      <div className="relative flex flex-col-reverse py-16 lg:pt-0 lg:flex-col lg:pb-0">
+      <div className="inset-y-0 top-0 right-0 z-0 w-full max-w-xl px-4 mx-auto md:px-0 lg:pr-0 lg:mb-0 lg:mx-0 lg:w-7/12 lg:max-w-full lg:absolute xl:px-0">
+        <svg
+          className="absolute left-0 hidden h-full text-white transform -translate-x-1/2 lg:block"
+          viewBox="0 0 100 100"
+          fill="currentColor"
+          preserveAspectRatio="none slice"
+        >
+          <path d="M50 0H100L50 100H0L50 0Z" />
+        </svg>
+        <img
+          className="object-cover w-full h-56 rounded shadow-lg lg:rounded-none lg:shadow-none md:h-96 lg:h-full"
+          src="https://assets.architecturaldigest.in/photos/600837f1e6e1f64740188ee5/16:9/w_2560%2Cc_limit/Italian-food_1-1366x768.jpg"
+          alt=""
+        />
+      </div>
+      <div className="relative flex flex-col items-start w-full max-w-xl px-4 mx-auto md:px-0 lg:px-8 lg:max-w-screen-xl">
+        <div className="mb-16 lg:my-40 lg:max-w-lg lg:pr-5">
+          <p className="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
+            Luna & Lyra
           </p>
-          <p className="text-center text-5xl font-semibold leading-10 text-gray-900">
-          Delicious Delights
+          <h2 className="mb-5 font-sans text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:leading-none">
+          Flavors Unleashed: 
+            <br className="hidden md:block" />
+            <span className="inline-block text-deep-purple-accent-400">
+            A Delicious Adventure for Food Lovers
+            </span>
+          </h2>
+          <p className="pr-5 mb-5 text-base text-gray-700 md:text-lg">
+          Immerse yourself in a tantalizing world of flavors at Flavors Unleashed. From exquisite recipes to culinary secrets, we are your gateway to a realm of gastronomic delights.
           </p>
-          <p className="text-center text-xl leading-loose text-gray-600">
-           A Food Bloggin Adventure
-          </p>
-          <div className="ace-x-2 flex w-80 items-center space-x-2 overflow-hidden rounded-lg border border-gray-300  bg-white px-3.5 shadow">
-            <MagnifyingGlassIcon className="h-5 w-5 rounded-lg" />
-            <input
-              type="text"
-              className="flex-1 bg-white  py-3 text-base leading-normal text-gray-500 outline-none focus:outline-none focus:ring-0 "
-              placeholder="Search"
-            />
-          </div>
-        </div>
-        {/* filters */}
-        <div className="flex flex-col justify-between  space-y-4 md:flex-row ">
-          
-        </div>
-        <div className="grid gap-4 gap-y-8 py-6 md:grid-cols-2 lg:grid-cols-3">
-          {recipes.map((recipe) => (
-            <div key={recipe.name} className="flex flex-col justify-between space-y-2">
-              <div className="space-y-2">
-              <Link to={`/recipe/${recipe.id}`} > <img src={recipe.image} className="aspect-video w-full rounded-md" alt="" /></Link> 
-                <p className="w-full text-sm font-semibold leading-tight text-purple-700">
-                  {recipe.cuisine.name}
-                </p>
-                <div>
-                  <p className="flex-1 text-2xl font-semibold text-gray-900">{recipe.name}</p>
-                </div>
-                <p className="w-full text-base leading-normal text-gray-600">{recipe.description}</p>
-                <p className="w-full text-base leading-normal text-gray-600">By: {recipe?.userDetails?.name}</p>
-              </div>
-              {/* <div className="flex  space-x-3 ">
-                <img className="h-full w-10 rounded-lg" src={post.avatar} alt={post.author} />
-                <div>
-                  <p className="text-sm font-semibold leading-tight text-gray-900">{post.author}</p>
-                  <p className="text-sm leading-tight text-gray-600">{post.date}</p>
-                </div>
-              </div> */}
-              {/*  */}
-            </div>
-          ))}
-        </div>
-        <hr className="my-6" />
-        {/* pagination */}
-        <div className="flex w-full justify-center">
-          <div className="mx-auto flex">
+          <div className="flex items-center">
+          <button className="flex items-center gap-2 px-6 py-3.5 text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">
+           Explore!
+          </button>
+          &nbsp; &nbsp;
             <a
-              href="#"
-              className="mx-1 flex cursor-not-allowed items-center rounded-md border border-gray-400 px-4 py-2 text-gray-500 dark:border-gray-800 dark:text-gray-400"
+              href="/"
+              aria-label=""
+              className="inline-flex items-center font-semibold text-gray-800 transition-colors duration-200 hover:text-deep-purple-accent-700"
             >
-              <ArrowLeftIcon className="h-5 w-5" />
-            </a>
-            <div className="hidden md:flex ">
-              {['1', '2', '3', '...', '9', '10'].map((page) => (
-                <a
-                  key={page}
-                  href="#"
-                  className="mx-1 flex items-center rounded-md border border-gray-400 px-4 py-2 text-gray-500 hover:scale-105 dark:border-gray-800 dark:text-gray-400"
-                >
-                  {page}
-                </a>
-              ))}
-            </div>
-            <div className="mx-10 flex flex-1 items-center text-sm leading-tight text-gray-700 md:hidden">
-              Page 1 of 10
-            </div>
-
-            <a
-              href="#"
-              className="mx-1 flex items-center rounded-md border border-gray-400 px-4 py-2 text-gray-500 hover:scale-105 dark:border-gray-800 dark:text-gray-400"
-            >
-              <ArrowRightIcon className="h-5 w-5" />
+              About us
             </a>
           </div>
         </div>
-        {/* footer */}
-        <footer className="container mx-auto py-10 px-10 md:px-0">
-          <div className="flex flex-col md:flex-row md:items-center">
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="#4F46E5"
-                className="h-10 w-10"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 01.75.75c0 5.056-2.383 9.555-6.084 12.436A6.75 6.75 0 019.75 22.5a.75.75 0 01-.75-.75v-4.131A15.838 15.838 0 016.382 15H2.25a.75.75 0 01-.75-.75 6.75 6.75 0 017.815-6.666zM15 6.75a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z"
-                  clipRule="evenodd"
-                />
-                <path d="M5.26 17.242a.75.75 0 10-.897-1.203 5.243 5.243 0 00-2.05 5.022.75.75 0 00.625.627 5.243 5.243 0 005.022-2.051.75.75 0 10-1.202-.897 3.744 3.744 0 01-3.008 1.51c0-1.23.592-2.323 1.51-3.008z" />
-              </svg>
-            </div>
-            <div className="mt-4 grow md:mt-0 md:ml-12">
-              <p className="text-base font-semibold text-gray-500 dark:text-gray-300">
-                © 2023 Lyra
-              </p>
-            </div>
-          </div>
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-            <div className="mb-8 lg:mb-0">
-              <p className="mb-6 text-lg font-semibold text-gray-700 dark:text-gray-100">Company</p>
-              <ul className="flex flex-col space-y-4 text-[14px] font-medium text-gray-500 dark:text-gray-400">
-                <li>About us</li>
-                <li>Blogging History</li>
-                <li>Our Team</li>
-                <li>Our Vision</li>
-                <li>Food-A-Thon</li>
-              </ul>
-            </div>
-            <div className="mb-8 lg:mb-0">
-              <p className="mb-6 text-lg font-semibold text-gray-700 dark:text-gray-100">
-                Our Stores
-              </p>
-              <ul className="flex flex-col space-y-4 text-[14px] font-medium text-gray-500 dark:text-gray-400">
-                <li>Washington</li>
-                <li>New Hampshire</li>
-                <li>Maine</li>
-                <li>Texas</li>
-                <li>Indiana</li>
-              </ul>
-            </div>
-            
-            <div className="mb-8 lg:mb-0">
-              <p className="mb-6 text-lg font-semibold text-gray-700 dark:text-gray-100">Legal</p>
-              <ul className="flex flex-col space-y-4 text-[14px] font-medium text-gray-500 dark:text-gray-400">
-                <li>Privacy Policy</li>
-                <li>Terms of Service</li>
-                <li>Cookie Policy</li>
-                <li>Disclaimer</li>
-                <li>Media Policy</li>
-              </ul>
-            </div>
-            <div className="mb-8 lg:mb-0">
-              <p className="mb-6 text-lg font-semibold text-gray-700 dark:text-gray-100">
-                Social Links
-              </p>
-              <ul className="flex flex-col space-y-4 text-[14px] font-medium text-gray-500 dark:text-gray-400">
-                <li>Facebook</li>
-                <li>Twitter</li>
-                <li>Instagram</li>
-                <li>Linkedin</li>
-                <li>YouTube</li>
-              </ul>
-            </div>
-          </div>
-        </footer>
       </div>
     </div>
+     </div>
+     <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+      <div className="max-w-screen-sm sm:text-center sm:mx-auto">
+        <h2 className="mb-4 font-sans text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:leading-none">
+          Chase ball of string eat
+        </h2>
+        <p className="text-base text-gray-700 md:text-lg sm:px-4">
+          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+          accusantium doloremque rem aperiam, eaque ipsa quae.
+        </p>
+        <hr className="w-full my-8 border-gray-300" />
+      </div>
     </div>
+        <TopRecipe />
+        <hr className="my-6" />
+        <Statistics />
+      </div>
+    </div>
+    <Footer />
+    </>
   )
 }
 
