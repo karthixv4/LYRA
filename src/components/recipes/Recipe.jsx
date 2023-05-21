@@ -1,175 +1,295 @@
 import React from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import TextField from '@mui/material/TextField';
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect,useState } from 'react';
-import { Dialog } from '@headlessui/react';
+import { useEffect,useState,Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 import { getRecipeById } from '../../slices/RecipeSlice';
-import {
-    Bars3Icon,
-    MagnifyingGlassIcon,
-    XMarkIcon,
-    ChevronDownIcon,
-    ArrowLeftIcon,
-    ArrowRightIcon,
-  } from '@heroicons/react/24/outline';
-  import { FaHeart, FaRegHeart } from 'react-icons/fa';
-  import {setUserName} from '../../slices/RecipeSlice';
-  import { useUserAuth } from '../auth/UserAuthContext';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/Favorite';
+import IconButton from '@mui/material/IconButton';
+import { red } from '@mui/material/colors';
+import Header from '../header/Header';
+import {setUserName} from '../../slices/RecipeSlice';
+import { useUserAuth } from '../auth/UserAuthContext';
+import { addLikeToRecipe,removeLikeToRecipe,addCommentToTheRecipe } from '../../slices/RecipeSlice';
+import { setComment } from '../../slices/RecipeSlice';
 const Recipe = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const {user} = useUserAuth();
     useEffect(()=>{
-        dispatch(setUserName(user.displayName))
-        dispatch(getRecipeById(id));
-    },[id])
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+      dispatch(setUserName(user.email))
+      dispatch(getRecipeById(id));
+    },[])
+    // useEffect(()=>{
+    //     dispatch(setUserName(user.email))
+    //     dispatch(getRecipeById(id));
+    // },[id])
     var recipe = useSelector((state) => state.recipes.selectedRecipe);
     var liked =  useSelector((state) => state.recipes.liked);
-
+    var likeCount =  useSelector((state) => state.recipes.likeCount);
+    var comment =  useSelector((state) => state.recipes.comment);
     const handleLike =()=>{
-
+      if(liked){
+        const details = {
+          id: id,
+          user: {
+          name: user.displayName,
+          email:user.email
+          }
+        }
+        console.log("details1:",details)
+        dispatch(removeLikeToRecipe(details))
+      }else{
+      const details = {
+        id: id,
+        user: {
+        name: user.displayName,
+        email:user.email
+        }
+      }
+      console.log("details:",details)
+      dispatch(addLikeToRecipe(details))
+      }   
     }
-  return (
-    <div>
-        <header className="bg-white">
-        <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-          <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="flex items-center space-x-2.5 font-bold text-slate-800 no-underline dark:text-white">
-                <span className="-mt-0.5"><a href="/home">Lyra</a></span>
-              </span>
-            </a>
+    let [isOpen, setIsOpen] = useState(false)
+
+  function closeModal() {
+    setIsOpen(false)
+  }
+
+  function openModal() {
+    setIsOpen(true)
+  }
+  const postComment=(e)=>{
+    e.preventDefault();
+    const details = {
+      user:{
+        name: user.displayName,
+        email: user.email
+      },
+      recipeId: recipe.id,
+      comment: comment
+    }
+    dispatch(addCommentToTheRecipe(details))
+  }
+    return (
+      <>
+      <Header />
+      <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+      <div className="grid gap-5 row-gap-10 lg:grid-cols-2">
+        <div className="flex flex-col justify-center">
+        <p className="text-base font-semibold leading-7 text-indigo-600">{recipe.cuisine?.name}</p>
+          <div className="max-w-xl mb-6">
+            <h2 className="max-w-lg mb-6 font-sans text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:leading-none">
+            {recipe.name}
+            </h2>
+            <p className="text-base text-gray-700 md:text-lg">
+            {recipe.description}
+            </p>
           </div>
-          <div className="flex lg:hidden">
-            <button
-              type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                {item.name}
-              </a>
-            ))}
-          </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-              Log in <span aria-hidden="true">&rarr;</span>
-            </a>
-          </div>
-        </nav>
-        <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
-          <div className="fixed inset-0 z-10" />
-          <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-            <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5">
-                <span className="sr-only">Your Company</span>
-                <img
-                  className="h-8 w-auto"
-                  src=""
-                  alt=""
-                />
-              </a>
-              <button
-                type="button"
-                className="-m-2.5 rounded-md p-2.5 text-gray-700"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <span className="sr-only">Close menu</span>
-                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-              </button>
-            </div>
-            <div className="mt-6 flow-root">
-              <div className="-my-6 divide-y divide-gray-500/10">
-                <div className="space-y-2 py-6">
-                  {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >
-                      {item.name}
-                    </a>
-                  ))}
-                </div>
-                <div className="py-6">
-                  <a
-                    href="#"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+          <p className="mb-4 text-sm font-bold tracking-widest uppercase">
+           Ingredients
+          </p>
+          <div className="grid space-y-3 sm:gap-2 sm:grid-cols-2 sm:space-y-0">
+            <ul className="space-y-3">
+            {recipe.ingredient && recipe.ingredient.map((ingredient, index) => (
+              <li className="flex" key={index}>
+                <span className="mr-1">
+                  <svg
+                    className="w-5 h-5 mt-px text-deep-purple-accent-400"
+                    stroke="currentColor"
+                    viewBox="0 0 52 52"
                   >
-                    Log in
-                  </a>
-                </div>
-              </div>
-            </div>
-          </Dialog.Panel>
-        </Dialog>
-      </header>
-      <section class="text-gray-600 body-font overflow-hidden">
-  <div class="container px-5 py-24 mx-auto">
-    <div class="lg:w-4/5 mx-auto flex flex-wrap">
-      <div class="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
-        <h1 class="text-gray-900 text-3xl title-font font-medium mb-4">{recipe.name}</h1>
+                    <polygon
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                      points="29 13 14 29 25 29 23 39 38 23 27 23"
+                    />
+                  </svg>
+                </span>
+                {ingredient.name} : {ingredient.quantity}
+              </li>
+              ))}
+            </ul>
+            {/* <ul className="space-y-3">
+              <li className="flex">
+                <span className="mr-1">
+                  <svg
+                    className="w-5 h-5 mt-px text-deep-purple-accent-400"
+                    stroke="currentColor"
+                    viewBox="0 0 52 52"
+                  >
+                    <polygon
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                      points="29 13 14 29 25 29 23 39 38 23 27 23"
+                    />
+                  </svg>
+                </span>
+                Flipboard curmudgeon
+              </li>
+              <li className="flex">
+                <span className="mr-1">
+                  <svg
+                    className="w-5 h-5 mt-px text-deep-purple-accent-400"
+                    stroke="currentColor"
+                    viewBox="0 0 52 52"
+                  >
+                    <polygon
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                      points="29 13 14 29 25 29 23 39 38 23 27 23"
+                    />
+                  </svg>
+                </span>
+                Storage shed
+              </li>
+              <li className="flex">
+                <span className="mr-1">
+                  <svg
+                    className="w-5 h-5 mt-px text-deep-purple-accent-400"
+                    stroke="currentColor"
+                    viewBox="0 0 52 52"
+                  >
+                    <polygon
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                      points="29 13 14 29 25 29 23 39 38 23 27 23"
+                    />
+                  </svg>
+                </span>
+                Satoshi Nakamoto
+              </li>
+            </ul> */}
+            {liked ? 
+        <>
+        <IconButton onClick={() => handleLike()}>
+        <FavoriteIcon sx={{ fontSize: 40,color:red[500] }}  />
+        <span>{likeCount}</span>
+        </IconButton>
        
-        <p class="leading-relaxed mb-4">{recipe.description}</p>
-        <div class="flex border-t border-gray-200 py-2">
-          <span class="text-gray-500">Ingredients</span>
-          {recipe.ingredient && recipe.ingredient.map((ingredient, index) => (
-            <>
-          <span class="ml-auto text-gray-900" key={index}>{ingredient.name}</span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-          <span class="ml-auto text-gray-900">{ingredient.quantity}</span>
-          </>
-          ))}
+        </>
+        :
+        <>
+        <IconButton onClick={() => handleLike()}>
+         <FavoriteBorderIcon sx={{ fontSize: 40 }} color="disabled" />
+         <span>{likeCount}</span>
+        </IconButton>
+        
+        </>
+      }
+          </div>
         </div>
-        <div class="flex border-t border-gray-200 py-2">
-          <span class="text-gray-500">Cooking steps</span> &nbsp;&nbsp;&nbsp;
-          <span class="ml-auto text-gray-900">{recipe.cookingSteps}</span>
-        </div>
-        <div class="flex border-t border-b mb-6 border-gray-200 py-2">
-          <span class="text-gray-500">Diet-Restriction</span>
-          <span class="ml-auto text-gray-500">{recipe.dietRestriction}</span>
-        </div>
-        <div class="flex">
-          <span class="title-font font-medium text-2xl text-gray-900">{recipe.cuisine?.name}</span>
-         <button
-      className={`flex items-center gap-1 p-1 rounded-lg border border-gray-300 hover:bg-gray-100 focus:outline-none ${
-        liked ? 'bg-red-500 text-white' : 'bg-white text-gray-500'
-      }`}
-      onClick={handleLike}
-    >
-      {liked ? (
-        <FaHeart className="w-5 h-5" />
-      ) : (
-        <FaRegHeart className="w-5 h-5" />
-      )}
-      <span>{liked ? 'Liked' : 'Like'}</span>
-    </button>
-    
+        <div>
+          <img
+            className="object-cover w-full h-56 rounded shadow-lg sm:h-96"
+            src={recipe.image}
+            alt=""
+          />
         </div>
       </div>
-      <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-84 object-cover object-center rounded" src={recipe.image}/>
+      <>
+      <div className="inset-0 flex items-center ">
+        <button
+          type="button"
+          onClick={openModal}
+          className="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+        >
+          Write a Review !
+        </button>
+      </div>
+
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                   Post your Comments!
+                  </Dialog.Title>
+                  
+                  <form onSubmit={postComment}>
+                  <div className="mt-2">
+					 <textarea id="comment" placeholder="" className="w-full rounded-md focus:ring focus:ring-opacity-0 focus:ring-violet-400 dark:border-black-700 dark:text-gray-900" onChange={(e)=>dispatch(setComment(e.target.value))}></textarea>
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      type="submit"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      onClick={closeModal}
+                    >
+                      Post!
+                    </button> 
+                  </div>
+                  </form>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
     </div>
-  </div>
-</section>
-    </div>
-  )
+{recipe?.comments &&  
+<div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+<div className="grid gap-10 mx-auto sm:grid-cols-2 lg:grid-cols-4 lg:max-w-screen-lg">
+  {recipe.comments.map((comment)=>(
+      
+        <div>
+          <img
+            className="object-cover w-24 h-24 rounded-full shadow"
+            src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260"
+            alt="Person"
+          />
+          <div className="flex flex-col justify-center mt-2">
+            <p className="text-lg font-bold">{comment.user.name}</p>
+            <p className="mb-4 text-xs text-gray-800">{comment.user.email}</p>
+            <p className="text-sm tracking-wide text-gray-800">
+              {comment.comment}
+            </p>
+          </div>
+        </div>
+      
+      ))}
+      </div>
+    </div>}
+   
+    </>
+    )
 }
-const navigation = [
-    { name: 'Categories', href: '/categories' },
-    { name: 'All Blogs', href: '/home' },
-    { name: 'Write one!', href: '/addRecipe' },
-  
-  ]
   
 export default Recipe

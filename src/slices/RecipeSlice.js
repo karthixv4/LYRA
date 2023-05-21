@@ -15,10 +15,12 @@ recipe:{
 recipes:[],
 error:false,
 status:'',
-selectedRecipe:[],
+selectedRecipe:{},
 file:null,
 liked:false,
-userName:''
+likeCount:0,
+userName:'',
+comment:''
 }
 //Service Calls will be made here
 //1. To save the Recipe
@@ -70,6 +72,39 @@ export const saveRecipe = createAsyncThunk(
     }
   );
 
+  //5. add like to the recipe
+  export const addLikeToRecipe = createAsyncThunk('recipe/AddLike', async (details) => {
+    try {
+      const response = await axios.put(`http://localhost:3200/Recipe/addLike?id=${details.id}`,details.user);
+      console.log("responseadd: ",response.data)
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  });
+
+  //6. remove like to the recipe
+  export const removeLikeToRecipe = createAsyncThunk('recipe/removeLike', async (details) => {
+    try {
+      const response = await axios.put(`http://localhost:3200/Recipe/removeLike?id=${details.id}`,details.user);
+      console.log("responseRemove: ",response.data)
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  });
+
+   //7. add comment to the recipe
+   export const addCommentToTheRecipe = createAsyncThunk('recipe/addComment', async (details) => {
+    try {
+      const response = await axios.post(`http://localhost:3200/Comments/addComment`,details);
+      console.log("response coment: ",response.data)
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  });
+
 
 const recipeSlice = createSlice({
     name:'category Slice',
@@ -96,6 +131,9 @@ const recipeSlice = createSlice({
       },
       setUserName(state,action){
         state.userName = action.payload
+      },
+      setComment(state,action){
+        state.comment = action.payload
       }
       
     },
@@ -130,8 +168,16 @@ const recipeSlice = createSlice({
             state.error = null;
           })
           .addCase(getRecipeById.fulfilled, (state, action) => {
+            const checkLiked = (nameToCheck,users) => {
+              console.log("nameToCheck: ",nameToCheck)
+              return users.some(user => user.email === nameToCheck);
+            };
             state.status = 'succeeded';
-            state.liked = action.payload?.likes?.includes(state.userName);
+            console.log("LIKES: ",action.payload?.likes)
+            action.payload?.likes ? state.liked = checkLiked(state.userName,action.payload?.likes) : state.liked = false
+            action.payload?.likes ? state.likeCount = action.payload?.likes.length : state.likeCount = 0
+            console.log("IS LIked: ",state.liked)
+            console.log("Like COunt: ",state.likeCount)
             state.selectedRecipe = action.payload;
           })
           .addCase(getRecipeById.rejected, (state, action) => {
@@ -148,9 +194,50 @@ const recipeSlice = createSlice({
           .addCase(deleteRecipeById.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
+          })
+          .addCase(addLikeToRecipe.pending, (state) => {
+            state.status = 'loading';
+            state.liked = true
+            state.likeCount += 1
+            state.error = null;
+          })
+          .addCase(addLikeToRecipe.fulfilled, (state, action) => {
+            state.liked=true;
+            state.selectedRecipe = action.payload;
+          })
+          .addCase(addLikeToRecipe.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+          })
+          .addCase(removeLikeToRecipe.pending, (state) => {
+            state.status = 'loading';
+            state.likeCount -= 1
+            state.liked = false
+            state.error = null;
+          })
+          .addCase(removeLikeToRecipe.fulfilled, (state, action) => {
+            state.liked=false;
+            state.selectedRecipe = action.payload;
+          })
+          .addCase(removeLikeToRecipe.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+          })
+          .addCase(addCommentToTheRecipe.pending, (state) => {
+            state.status = 'loading';
+            state.error = null;
+          })
+          .addCase(addCommentToTheRecipe.fulfilled, (state, action) => {
+            state.selectedRecipe = action.payload
+            state.error = null;
+          })
+          .addCase(addCommentToTheRecipe.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
           });
+
       },
 })
 
-export const {updateName,updateDescription,updateIngredient,updateFile,updateCookingSteps,updateDietRestriction,setUserName} = recipeSlice.actions
+export const {updateName,updateDescription,updateIngredient,updateFile,updateCookingSteps,updateDietRestriction,setUserName,setComment} = recipeSlice.actions
 export default recipeSlice.reducer;

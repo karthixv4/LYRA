@@ -9,6 +9,7 @@ import Recipe from "./components/recipes/Recipe";
 import { UserContextProvider } from "./components/auth/UserAuthContext";
 import SecureRoute from "./components/auth/SecureRoute";
 import Header from "./components/header/Header";
+import WelcomeAnimation from "./components/Animations/WelcomeAnimation";
 function App() {
   return (
     <UserContextProvider>
@@ -18,8 +19,9 @@ function App() {
     <Route path="/home" element={<Home/>}></Route>
     <Route path="/signin" element={<SignIn/>}></Route>
     <Route path="/signup" element={<Signup/>}></Route>
-    <Route path="/recipe/:id" element={<SecureRoute><Recipe/></SecureRoute>}></Route>
+    <Route path="/recipe/:id" element={<Recipe/>}></Route>
     <Route path='/header' element={<Header/>}></Route>
+    <Route path='/anim' element={<WelcomeAnimation/>}></Route>
     </Routes>
     </UserContextProvider>
   );
