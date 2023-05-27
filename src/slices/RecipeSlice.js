@@ -21,7 +21,8 @@ liked:false,
 likeCount:0,
 userName:'',
 comment:'',
-selectedCuisine:'CHOOSE ME'
+selectedCuisine:'CHOOSE ME',
+topRecipes:[]
 }
 //Service Calls will be made here
 //1. To save the Recipe
@@ -105,7 +106,7 @@ export const saveRecipe = createAsyncThunk(
     }
   });
 
-  //7. Get Recipes by Cuisine Type
+  //8. Get Recipes by Cuisine Type
   export const getRecipesByCuisine = createAsyncThunk('recipe/getByCuisine', async (id) => {
     try {
       const response = await axios.get(`http://localhost:3200/Recipe/getByCuisine?id=${id}`,);
@@ -114,6 +115,16 @@ export const saveRecipe = createAsyncThunk(
       throw error.response.data;
     }
   });
+
+   //9. To get the top 3 recipe based on likes
+   export const getTopRecipes = createAsyncThunk(
+    'recipe/getTopRecipes',
+    async () => {
+      const response = await fetch('http://localhost:3200/Recipe/getTopRecipes');
+      const data = await response.json();
+      return data;
+    }
+  );
 
 const recipeSlice = createSlice({
     name:'category Slice',
@@ -261,6 +272,18 @@ const recipeSlice = createSlice({
             state.error = null;
           })
           .addCase(getRecipesByCuisine.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+          })
+          .addCase(getTopRecipes.pending, (state) => {
+            state.status = 'loading';
+            state.error = null;
+          })
+          .addCase(getTopRecipes.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.topRecipes = action.payload;
+          })
+          .addCase(getTopRecipes.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
           });

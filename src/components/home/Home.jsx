@@ -1,43 +1,11 @@
-import React, { useState,useEffect } from 'react'
-import { Dialog } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllRecipes } from '../../slices/RecipeSlice';
-import { Link } from 'react-router-dom';
+import React from 'react'
 import Header from '../header/Header';
 import Footer from '../header/Footer';
 import Statistics from '../header/Statistics';
 import TopRecipe from '../header/TopRecipe';
-import {
-  Bars3Icon,
-  MagnifyingGlassIcon,
-  XMarkIcon,
-  ChevronDownIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-} from '@heroicons/react/24/outline'
-import { useUserAuth } from '../auth/UserAuthContext';
+
 const Home = () => {
-  const {user,logout} = useUserAuth();
-    const dispatch = useDispatch();
-    var recipes = useSelector((state) => state.recipes.recipes)
-    useEffect(() => {
-        dispatch(getAllRecipes())
-      }, []);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const doLogout = async () =>{
-      try{
-        await logout()
-      }catch(e){
-        console.log(e.message)
-      }
-    }
-    function truncateText(text, limit) {
-      if (!text || !limit) return '';
-      if (text.length <= limit) return text;
-    
-      const truncatedText = text.split(' ').slice(0, limit).join(' ');
-      return truncatedText + '...';
-    }
+ 
   return (
     <>
     <div>
