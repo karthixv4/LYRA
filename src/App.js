@@ -12,6 +12,7 @@ import Header from "./components/header/Header";
 import WelcomeAnimation from "./components/Animations/WelcomeAnimation";
 import CategoryResult from "./components/categories/CategoryResult";
 import AddingRecipe from "./components/recipes/AddingRecipe";
+import AllRecipes from "./components/home/AllRecipes";
 function App() {
   return (
     <UserContextProvider>
@@ -20,6 +21,7 @@ function App() {
     <Route path="/category/:id" element={<CategoryResult/>}></Route>
     <Route path="/addRecipe" element={<AddingRecipe />}/>
     <Route path="/home" element={<Home/>}></Route>
+    <Route path="/all" element={<AllRecipes/>}></Route>
     <Route path="/signin" element={<SignIn/>}></Route>
     <Route path="/signup" element={<Signup/>}></Route>
     <Route path="/recipe/:id" element={<Recipe/>}></Route>

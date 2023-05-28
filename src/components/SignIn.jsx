@@ -3,12 +3,22 @@ import { useUserAuth } from './auth/UserAuthContext';
 import { useNavigate } from 'react-router-dom';
 import GoogleButton from 'react-google-button';
 import { Link } from 'react-router-dom';
+import { createUser } from '../slices/UserSlice';
+import { useDispatch, useSelector } from 'react-redux';
 const SignIn = () => {
+  const dispatch = useDispatch();
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const [error,setError] = useState('');
   const navigate = useNavigate();
   const {signin,googleSignIn} = useUserAuth();
+  const saveUsertoDB =(name,email)=>{
+    const userDetails = {
+      name: name,
+      email:email
+    }
+    dispatch(createUser(userDetails));
+}
     const TrysignIn = async (event) =>{
         event.preventDefault();
         setError("")
@@ -25,8 +35,7 @@ const SignIn = () => {
       event.preventDefault();
       setError("")
       try{
-    
-        await googleSignIn()
+        await googleSignIn().then((result)=>saveUsertoDB(result?.user?.displayName,result?.user?.email))
         navigate("/home")
       }catch(error){
         console.log(error.message)

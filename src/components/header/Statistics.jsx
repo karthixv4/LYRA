@@ -1,106 +1,56 @@
 import React from 'react'
-
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { getAllRecipes } from '../../slices/RecipeSlice';
+import { useEffect } from 'react';
 const Statistics = () => {
+  var stats = useSelector((state) => state.recipes.stats)
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getAllRecipes())
+      }, []);
+      console.log("stats",stats)
+     
   return (
-    <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="text-center">
-          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-indigo-50 sm:w-12 sm:h-12">
-            <svg
-              className="w-8 h-8 text-deep-purple-accent-400 sm:w-10 sm:h-10"
-              stroke="currentColor"
-              viewBox="0 0 52 52"
-            >
-              <polygon
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                points="29 13 14 29 25 29 23 39 38 23 27 23"
-              />
-            </svg>
-          </div>
-          <h6 className="text-4xl font-bold text-deep-purple-accent-400">
-          5.6
-          </h6>
-          <p className="mb-2 font-bold text-md">Billion</p>
-          <p className="text-gray-700">
-          People who try new food trends
-          </p>
+    <section className="py-14">
+    <div className="max-w-screen-xl mx-auto px-4 text-gray-600 gap-x-12 items-start justify-between lg:flex md:px-8">
+        <div className="sm:hidden lg:block lg:max-w-xl">
+            <img src="https://images.unsplash.com/photo-1622675363311-3e1904dc1885?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" className="rounded-lg" alt="" />
         </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-indigo-50 sm:w-12 sm:h-12">
-            <svg
-              className="w-8 h-8 text-deep-purple-accent-400 sm:w-10 sm:h-10"
-              stroke="currentColor"
-              viewBox="0 0 52 52"
-            >
-              <polygon
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                points="29 13 14 29 25 29 23 39 38 23 27 23"
-              />
-            </svg>
-          </div>
-          <h6 className="text-4xl font-bold text-deep-purple-accent-400">
-            1.3K
-          </h6>
-          <p className="mb-2 font-bold text-md">Users</p>
-          <p className="text-gray-700">
-            For many men, the acquisition of wealth does not end their troubles,
-            it only changes them.
-          </p>
+        <div className="mt-6 gap-12 sm:mt-0 md:flex lg:block">
+            <div className="max-w-2xl">
+                <h3 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
+                    We do our best to make customers always happy
+                </h3>
+                <p className="mt-3 max-w-xl">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi venenatis sollicitudin quam ut tincidunt.
+                </p>
+            </div>
+            <div className="flex-none mt-6 md:mt-0 lg:mt-6">
+                <ul className="inline-grid gap-y-8 gap-x-14 grid-cols-2">
+                   
+                            <li  className="">
+                                <h4 className="text-4xl text-indigo-600 font-semibold">{stats.totalRecipes} +</h4>
+                                <p className="mt-3 font-medium">Recipes</p>
+                            </li>
+                            <li  className="">
+                                <h4 className="text-4xl text-indigo-600 font-semibold">HII</h4>
+                                <p className="mt-3 font-medium">HELLO</p>
+                            </li>
+                            <li  className="">
+                                <h4 className="text-4xl text-indigo-600 font-semibold">HII</h4>
+                                <p className="mt-3 font-medium">HELLO</p>
+                            </li>
+                            <li  className="">
+                                <h4 className="text-4xl text-indigo-600 font-semibold">HII</h4>
+                                <p className="mt-3 font-medium">HELLO</p>
+                            </li>
+                      
+                </ul>
+            </div>
         </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-indigo-50 sm:w-12 sm:h-12">
-            <svg
-              className="w-8 h-8 text-deep-purple-accent-400 sm:w-10 sm:h-10"
-              stroke="currentColor"
-              viewBox="0 0 52 52"
-            >
-              <polygon
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                points="29 13 14 29 25 29 23 39 38 23 27 23"
-              />
-            </svg>
-          </div>
-          <h6 className="text-4xl font-bold text-deep-purple-accent-400">91</h6>
-          <p className="mb-2 font-bold text-md">Subscribers</p>
-          <p className="text-gray-700">
-            It's a helluva start, being able to recognize what makes you happy
-            today, in this moment.
-          </p>
-        </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 rounded-full bg-indigo-50 sm:w-12 sm:h-12">
-            <svg
-              className="w-8 h-8 text-deep-purple-accent-400 sm:w-10 sm:h-10"
-              stroke="currentColor"
-              viewBox="0 0 52 52"
-            >
-              <polygon
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                points="29 13 14 29 25 29 23 39 38 23 27 23"
-              />
-            </svg>
-          </div>
-          <h6 className="text-4xl font-bold text-deep-purple-accent-400">52</h6>
-          <p className="mb-2 font-bold text-md">Products</p>
-          <p className="text-gray-700">
-            Happiness is when what you think, what you say, and what you do are
-            in harmony.
-          </p>
-        </div>
-      </div>
     </div>
+</section>
   )
 }
 

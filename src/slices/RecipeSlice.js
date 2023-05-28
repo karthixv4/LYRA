@@ -22,7 +22,10 @@ likeCount:0,
 userName:'',
 comment:'',
 selectedCuisine:'CHOOSE ME',
-topRecipes:[]
+topRecipes:[],
+stats:{
+totalRecipes:0
+}
 }
 //Service Calls will be made here
 //1. To save the Recipe
@@ -32,6 +35,7 @@ export const saveRecipe = createAsyncThunk(
       const formData = new FormData();
     formData.append('recipe', JSON.stringify(recipe));
     formData.append('file', file);
+    console.log("FORMDATA",JSON.stringify(recipe))
     const response = await axios.post(
       'http://localhost:3200/Recipe/saveRecipe',
       formData,
@@ -89,7 +93,6 @@ export const saveRecipe = createAsyncThunk(
   export const removeLikeToRecipe = createAsyncThunk('recipe/removeLike', async (details) => {
     try {
       const response = await axios.put(`http://localhost:3200/Recipe/removeLike?id=${details.id}`,details.user);
-      console.log("responseRemove: ",response.data)
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -186,6 +189,7 @@ const recipeSlice = createSlice({
           .addCase(getAllRecipes.fulfilled, (state, action) => {
             state.status = 'succeeded';
             state.recipes = action.payload;
+            state.stats.totalRecipes = action.payload.length
           })
           .addCase(getAllRecipes.rejected, (state, action) => {
             state.status = 'failed';

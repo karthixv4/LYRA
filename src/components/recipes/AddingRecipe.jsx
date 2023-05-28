@@ -221,7 +221,7 @@ const AddingRecipe = () => {
             recipe:recipe,
             file:selectedFile
           }
-         // console.log("Recipe Details: ",newRecipe)
+         console.log("Recipe Details: ",newRecipe)
          dispatch(saveRecipe(newRecipe))
          navigate("/home")
       };

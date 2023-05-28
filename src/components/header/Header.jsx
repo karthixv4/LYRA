@@ -106,6 +106,9 @@ const Header = () => {
               <MenuItem onClick={handleCloseNavMenu}>
                 <Typography textAlign="center"><Link to="/addRecipe">Add a Recipe!</Link></Typography>
               </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign="center"><Link to="/all">All Recipe</Link></Typography>
+              </MenuItem>
            
           </Menu>
         </Box>
@@ -137,6 +140,9 @@ const Header = () => {
             </Button>
             <Button sx={{ my: 2, color: 'white', display: 'block' }}>
               <Link to="/addRecipe">Add a Recipe!</Link>
+            </Button>
+            <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+              <Link to="/all">All Recipe</Link>
             </Button>
         
         </Box>
