@@ -14,7 +14,7 @@ const initialState = {
 
 export const createUser = createAsyncThunk('user/createUser', async (user) => {
   try {
-    const response = await axios.post('http://localhost:3200/User/addUser', user);
+    const response = await axios.post('https://luna-foodblogging-backend.onrender.com/User/addUser', user);
     return response.data;
   } catch (error) {
     throw error.response.data;

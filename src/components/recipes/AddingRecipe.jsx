@@ -5,7 +5,6 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { ArrowPathIcon, CloudArrowUpIcon, FingerPrintIcon, LockClosedIcon } from '@heroicons/react/24/outline'
 import { Grid, IconButton, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -15,12 +14,11 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { updateName,updateIngredient,setCuisine,updateDescription,saveRecipe,updateFile,updateCookingSteps,updateDietRestriction } from '../../slices/RecipeSlice';
+import { updateName,setCuisine,updateDescription,saveRecipe,updateCookingSteps,updateDietRestriction } from '../../slices/RecipeSlice';
 import { useUserAuth } from '../auth/UserAuthContext';
 import { getAllCuisines } from '../../slices/CuisineSlice';
 import { getAllRecipes } from '../../slices/RecipeSlice';
 import { useNavigate } from 'react-router-dom';
-import Header from '../header/Header';
 
 const steps = ['Recipe About', 'Ingredients', 'Cooking Steps'];
 
@@ -250,7 +248,6 @@ const AddingRecipe = () => {
   
     return (
         <>
-        <Header />
         <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">

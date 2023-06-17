@@ -5,7 +5,9 @@ const initialState={
     cuisine:[],
     cuisines:[],
     error:false,
-    status:''
+    status:'',
+    loading: false,
+    totalCuisines:0
 }
 
 //Service calls to be made here
@@ -18,7 +20,7 @@ export const saveCuisine = createAsyncThunk(
       formData.append('file', cuisineData.file);
   
       const response = await axios.post(
-        'http://localhost:3200/Cuisine/saveCuisine',
+        'https://luna-foodblogging-backend.onrender.com/Cuisine/saveCuisine',
         formData,
         {
           headers: {
@@ -33,7 +35,7 @@ export const saveCuisine = createAsyncThunk(
 //2. to fetch all cuisines
 export const getAllCuisines = createAsyncThunk('cuisine/getAllCuisines', async () => {
   try {
-    const response = await axios.get('http://localhost:3200/Cuisine/getAll');
+    const response = await axios.get('https://luna-foodblogging-backend.onrender.com/Cuisine/getAll');
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -42,7 +44,7 @@ export const getAllCuisines = createAsyncThunk('cuisine/getAllCuisines', async (
 //3. to get a specific cuisine
 export const getCuisineById = createAsyncThunk('cuisine/getCuisineById', async (id) => {
     try {
-      const response = await axios.get(`http://localhost:3200/Cuisine/getById?id=${id}`);
+      const response = await axios.get(`https://luna-foodblogging-backend.onrender.com/Cuisine/getById?id=${id}`);
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -57,36 +59,37 @@ const cuisineSlice = createSlice({
     extraReducers:(builder)=>{
         builder
         .addCase(saveCuisine.pending, (state) => {
-            state.status = 'loading';
+            state.loading = true;
           })
           .addCase(saveCuisine.fulfilled, (state, action) => {
-            state.status = 'succeeded';
+            state.loading = false;
             state.cuisines.push(action.payload);
           })
           .addCase(saveCuisine.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(getAllCuisines.pending, (state) => {
-            state.status = 'loading';
+            state.loading = true;
           })
           .addCase(getAllCuisines.fulfilled, (state, action) => {
-            state.status = 'succeeded';
+            state.loading = false;
             state.cuisines = action.payload;
+            state.totalCuisines = action.payload.length;
           })
           .addCase(getAllCuisines.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(getCuisineById.pending, (state) => {
-            state.status = 'loading';
+            state.loading = true;
           })
           .addCase(getCuisineById.fulfilled, (state, action) => {
-            state.status = 'succeeded';
+            state.loading = false;
             state.cuisine = action.payload;
           })
           .addCase(getCuisineById.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           });
     

@@ -2,30 +2,18 @@ import React from 'react'
 import { useEffect,useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllCuisines } from '../../slices/CuisineSlice';
-import { Dialog } from '@headlessui/react';
-import { useParams } from 'react-router-dom';
-import { getRecipeById } from '../../slices/RecipeSlice';
-import Header from '../header/Header';
 import { Link } from 'react-router-dom';
-import {
-    Bars3Icon,
-    MagnifyingGlassIcon,
-    XMarkIcon,
-    ChevronDownIcon,
-    ArrowLeftIcon,
-    ArrowRightIcon,
-  } from '@heroicons/react/24/outline'
-
+import Loader from '../Animations/Loader';
 const Categories = () => {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const dispatch = useDispatch();
     var cuisines = useSelector((state) => state.cuisines.cuisines)
+    var loading = useSelector((state)=>state.cuisines.loading)
     useEffect(() => {
         dispatch(getAllCuisines())
       }, []);
   return (
-    <div>
-        <Header />
+    <>
+    <Loader showLoader={loading} />
        <div
   class="max-w-6xl px-4 mx-auto py-4 md:py-6 dark:bg-gray-900 dark:text-gray-300">
   <div
@@ -85,7 +73,7 @@ const Categories = () => {
   </div>
 </div>
 
-    </div>
+    </>
   )
 }
 const navigation = [

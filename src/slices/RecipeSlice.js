@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { useUserAuth } from '../components/auth/UserAuthContext';
 import axios from 'axios';
 const initialState={
+loading: false,
 recipe:{
   name:'',
   description:'',
@@ -37,7 +38,7 @@ export const saveRecipe = createAsyncThunk(
     formData.append('file', file);
     console.log("FORMDATA",JSON.stringify(recipe))
     const response = await axios.post(
-      'http://localhost:3200/Recipe/saveRecipe',
+      'https://luna-foodblogging-backend.onrender.com/Recipe/saveRecipe',
       formData,
       {
         headers: {
@@ -53,7 +54,7 @@ export const saveRecipe = createAsyncThunk(
   export const getAllRecipes = createAsyncThunk(
     'recipe/getAllRecipes',
     async () => {
-      const response = await fetch('http://localhost:3200/Recipe/getAll');
+      const response = await fetch('https://luna-foodblogging-backend.onrender.com/Recipe/getAll');
       const data = await response.json();
       return data;
     }
@@ -63,7 +64,7 @@ export const saveRecipe = createAsyncThunk(
   export const getRecipeById = createAsyncThunk(
     'recipe/getRecipeById',
     async (recipeId) => {
-      const response = await fetch(`http://localhost:3200/Recipe/getById?Id=${recipeId}`);
+      const response = await fetch(`https://luna-foodblogging-backend.onrender.com/Recipe/getById?Id=${recipeId}`);
       const data = await response.json();
       return data;
     }
@@ -73,7 +74,7 @@ export const saveRecipe = createAsyncThunk(
   export const deleteRecipeById = createAsyncThunk(
     'recipe/deleteRecipeById',
     async (recipeId) => {
-      await fetch(`http://localhost:3200/Recipe/delete?Id=${recipeId}`, { method: 'DELETE' });
+      await fetch(`https://luna-foodblogging-backend.onrender.com/Recipe/delete?Id=${recipeId}`, { method: 'DELETE' });
       return recipeId;
     }
   );
@@ -81,7 +82,7 @@ export const saveRecipe = createAsyncThunk(
   //5. add like to the recipe
   export const addLikeToRecipe = createAsyncThunk('recipe/AddLike', async (details) => {
     try {
-      const response = await axios.put(`http://localhost:3200/Recipe/addLike?id=${details.id}`,details.user);
+      const response = await axios.put(`https://luna-foodblogging-backend.onrender.com/Recipe/addLike?id=${details.id}`,details.user);
       console.log("responseadd: ",response.data)
       return response.data;
     } catch (error) {
@@ -92,7 +93,7 @@ export const saveRecipe = createAsyncThunk(
   //6. remove like to the recipe
   export const removeLikeToRecipe = createAsyncThunk('recipe/removeLike', async (details) => {
     try {
-      const response = await axios.put(`http://localhost:3200/Recipe/removeLike?id=${details.id}`,details.user);
+      const response = await axios.put(`https://luna-foodblogging-backend.onrender.com/Recipe/removeLike?id=${details.id}`,details.user);
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -102,7 +103,7 @@ export const saveRecipe = createAsyncThunk(
    //7. add comment to the recipe
    export const addCommentToTheRecipe = createAsyncThunk('recipe/addComment', async (details) => {
     try {
-      const response = await axios.post(`http://localhost:3200/Comments/addComment`,details);
+      const response = await axios.post(`https://luna-foodblogging-backend.onrender.com/Comments/addComment`,details);
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -112,7 +113,7 @@ export const saveRecipe = createAsyncThunk(
   //8. Get Recipes by Cuisine Type
   export const getRecipesByCuisine = createAsyncThunk('recipe/getByCuisine', async (id) => {
     try {
-      const response = await axios.get(`http://localhost:3200/Recipe/getByCuisine?id=${id}`,);
+      const response = await axios.get(`https://luna-foodblogging-backend.onrender.com/Recipe/getByCuisine?id=${id}`,);
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -123,7 +124,7 @@ export const saveRecipe = createAsyncThunk(
    export const getTopRecipes = createAsyncThunk(
     'recipe/getTopRecipes',
     async () => {
-      const response = await fetch('http://localhost:3200/Recipe/getTopRecipes');
+      const response = await fetch('https://luna-foodblogging-backend.onrender.com/Recipe/getTopRecipes');
       const data = await response.json();
       return data;
     }
@@ -171,124 +172,128 @@ const recipeSlice = createSlice({
     extraReducers: (builder) => {
         builder
           .addCase(saveRecipe.pending, (state) => {
-            state.status = 'loading';
             state.error = null;
+            state.loading = true;
           })
           .addCase(saveRecipe.fulfilled, (state, action) => {
-            state.status = 'succeeded';
+            state.loading = false;
             state.recipe = action.payload;
           })
           .addCase(saveRecipe.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(getAllRecipes.pending, (state) => {
+            state.loading = true;
             state.status = 'loading';
             state.error = null;
           })
           .addCase(getAllRecipes.fulfilled, (state, action) => {
-            state.status = 'succeeded';
+            state.loading = false;
             state.recipes = action.payload;
             state.stats.totalRecipes = action.payload.length
           })
           .addCase(getAllRecipes.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(getRecipeById.pending, (state) => {
-            state.status = 'loading';
+            state.selectedRecipe = {}
+            state.loading = true;
             state.error = null;
           })
           .addCase(getRecipeById.fulfilled, (state, action) => {
             const checkLiked = (nameToCheck,users) => {
-              console.log("nameToCheck: ",nameToCheck)
               return users.some(user => user.email === nameToCheck);
             };
-            state.status = 'succeeded';
-            console.log("LIKES: ",action.payload?.likes)
+            state.loading = false;
             action.payload?.likes ? state.liked = checkLiked(state.userName,action.payload?.likes) : state.liked = false
             action.payload?.likes ? state.likeCount = action.payload?.likes.length : state.likeCount = 0
-            console.log("IS LIked: ",state.liked)
-            console.log("Like COunt: ",state.likeCount)
+            
             state.selectedRecipe = action.payload;
           })
           .addCase(getRecipeById.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(deleteRecipeById.pending, (state) => {
-            state.status = 'loading';
+            state.loading = true;
             state.error = null;
           })
           .addCase(deleteRecipeById.fulfilled, (state, action) => {
+            state.loading = false;
             state.recipes = state.recipes.filter((recipe) => recipe.id !== action.payload);
           })
           .addCase(deleteRecipeById.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(addLikeToRecipe.pending, (state) => {
-            state.status = 'loading';
+            state.loading = true;
             state.liked = true
             state.likeCount += 1
             state.error = null;
           })
           .addCase(addLikeToRecipe.fulfilled, (state, action) => {
-            state.liked=true;
+            state.loading = false;
             state.selectedRecipe = action.payload;
           })
           .addCase(addLikeToRecipe.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(removeLikeToRecipe.pending, (state) => {
-            state.status = 'loading';
+            state.loading = true;
             state.likeCount -= 1
             state.liked = false
             state.error = null;
           })
           .addCase(removeLikeToRecipe.fulfilled, (state, action) => {
+            state.loading = false;
             state.liked=false;
             state.selectedRecipe = action.payload;
           })
           .addCase(removeLikeToRecipe.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(addCommentToTheRecipe.pending, (state) => {
-            state.status = 'loading';
+            state.loading = true;
             state.error = null;
           })
           .addCase(addCommentToTheRecipe.fulfilled, (state, action) => {
+            state.loading = false;
             state.selectedRecipe = action.payload
             state.error = null;
           })
           .addCase(addCommentToTheRecipe.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(getRecipesByCuisine.pending, (state) => {
-            state.status = 'loading';
+            state.recipes = []
+            state.loading = true;
             state.error = null;
           })
           .addCase(getRecipesByCuisine.fulfilled, (state, action) => {
+            state.loading = false;
             state.recipes = action.payload
             state.error = null;
           })
           .addCase(getRecipesByCuisine.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           })
           .addCase(getTopRecipes.pending, (state) => {
-            state.status = 'loading';
+            state.loading = true;
             state.error = null;
           })
           .addCase(getTopRecipes.fulfilled, (state, action) => {
-            state.status = 'succeeded';
+            state.loading = false;
             state.topRecipes = action.payload;
           })
           .addCase(getTopRecipes.rejected, (state, action) => {
-            state.status = 'failed';
+            state.loading = false;
             state.error = action.error.message;
           });
 

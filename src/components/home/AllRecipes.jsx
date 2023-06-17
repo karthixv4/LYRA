@@ -1,11 +1,20 @@
-import React, { useState,useEffect } from 'react'
-import Header from '../header/Header'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllRecipes } from '../../slices/RecipeSlice';
 import { Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
+import Loader from "../Animations/Loader";
+import {motion} from 'framer-motion';
+
+const recipesVariants = {
+  visible:{
+    scale: 1.1
+  }
+}
+
 const AllRecipes = () => {
     var recipes = useSelector((state) => state.recipes.recipes)
+    const isLoading = useSelector((state)=>state.recipes?.loading)
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getAllRecipes())
@@ -20,13 +29,15 @@ const AllRecipes = () => {
       }
   return (
     <>
-    <Header />
-    
+    <Loader showLoader={isLoading} />
   <Grid container spacing={2}>
     {recipes.map((recipe, index) => (
          <Grid item xs={12} sm={6} md={4} key={index}>
            
-       <div className="w-full flex flex-col max-w-lg p-8 space-y-6 overflow-hidden rounded-lg shadow-md dark:bg-gray-900 dark:text-gray-100 m-4">
+       <motion.div className="w-full flex flex-col max-w-lg p-8 space-y-6 overflow-hidden rounded-lg shadow-md dark:bg-gray-900 dark:text-gray-100 m-4"
+       variants={recipesVariants}
+       whileHover="visible"
+       >
        
         <div className="flex space-x-4" key={index}>
           <img alt="" src="https://source.unsplash.com/100x100/?portrait" className="object-cover w-10 h-10 rounded-full shadow dark:bg-gray-500" />
@@ -72,9 +83,9 @@ const AllRecipes = () => {
           </div>
         </div>
         </Link>
-      </div>
-     
+      </motion.div> 
       </Grid>
+  
     ))}
     </Grid>
     </>

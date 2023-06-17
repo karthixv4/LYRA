@@ -1,5 +1,4 @@
 import React from 'react'
-import Header from '../header/Header';
 import { useParams } from 'react-router-dom';
 import { getRecipesByCuisine } from '../../slices/RecipeSlice';
 import { useDispatch, useSelector } from "react-redux";
@@ -8,14 +7,23 @@ import { Link } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import RateReviewRoundedIcon from '@mui/icons-material/RateReviewRounded';
 import { purple } from '@mui/material/colors';
+import Loader from '../Animations/Loader';
+import {motion} from 'framer-motion';
+
+const catResults = {
+  visible:{
+    scale: 1.1
+  }
+}
+
 const CategoryResult = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  var recipes = useSelector((state) => state.recipes.recipes);
-
+  const recipes = useSelector((state) => state.recipes.recipes);
+  const loading = useSelector((state)=>state.recipes.loading)
   useEffect(()=>{
     dispatch(getRecipesByCuisine(id))
-  },[id])
+  },[])
   function truncateText(text, limit) {
     if (!text || !limit) return '';
     if (text.length <= limit) return text;
@@ -23,13 +31,40 @@ const CategoryResult = () => {
     const truncatedText = text.split(' ').slice(0, limit).join(' ');
     return truncatedText + '...';
   }
+
+  const ifNoRecipes =()=>{
+    return (
+      <main>
+            <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-start h-screen md:px-8">
+                <div className="max-w-lg mx-auto space-y-3 text-center">
+                    <h3 className="text-gray-800 text-4xl font-semibold sm:text-5xl">
+                        No Recipes in this Cuisine
+                    </h3>
+                    <p className="text-gray-600">
+                        You can add one!
+                    </p>
+                    {/* <a href="javascript:void(0)" className="text-indigo-600 duration-150 hover:text-indigo-400 font-medium inline-flex items-center gap-x-1">
+                        Go back
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                            <path fillRule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clipRule="evenodd" />
+                        </svg>
+                    </a> */}
+                </div>
+            </div>
+        </main>
+    )
+  }
   return (
     <>
-    <Header />
-    <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+    <Loader showLoader={loading} />
+    {recipes.length === 0 ? ifNoRecipes() : 
+    <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20" id="catResults" >
       <div className="grid gap-8 lg:grid-cols-3 sm:max-w-sm sm:mx-auto lg:max-w-full">
-        {recipes.map((recipe)=>(
-        <div className="overflow-hidden transition-shadow duration-300 bg-white rounded shadow-sm" key={recipe.id}>
+        { recipes.map((recipe)=>(
+        <motion.div className="overflow-hidden transition-shadow duration-300 bg-white rounded shadow-sm" key={recipe.id}
+        variants={catResults}
+        whileHover="visible"
+        >
           <img
             src={recipe.image}
             className="object-cover w-full h-64"
@@ -72,10 +107,11 @@ const CategoryResult = () => {
             <RateReviewRoundedIcon sx={{ fontSize: 30 }} /><span>{recipe?.comments?.length}</span>
             </Link>
           </div>
-        </div>
+        </motion.div>
        ))}
       </div>
     </div>
+    }
     </>
   )
 }

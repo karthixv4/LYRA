@@ -1,4 +1,3 @@
-import { useDispatch,useSelector } from 'react-redux'
 import { useUserAuth } from '../auth/UserAuthContext'
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -15,8 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 const Header = () => {
     const{user,logout} = useUserAuth();
      const [anchorElNav, setAnchorElNav] = React.useState(null);
